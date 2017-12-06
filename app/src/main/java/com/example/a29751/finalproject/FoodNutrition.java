@@ -15,7 +15,6 @@ public class FoodNutrition extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_nutrition);
 
-        TextView fName = (TextView)findViewById(R.id.foodName);
 
     }
 }
