@@ -18,7 +18,7 @@ import java.util.Calendar;
 
 public class foodDatabaseHelper extends SQLiteOpenHelper{
     public final String ACTIVITY_NAME ="foodDatabaseHelper";
-    public final static String DATABASE_NAME = "foodDatabase.db";
+    public final static String DATABASE_NAME = "fdDatabase.db";
     public final static int VERSION_NUM = 1;
     public final static String TABLE_NAME = "myTable";
     public final static String ID_HEADER = "ID" ;
@@ -27,6 +27,7 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
     public final static String FAT_HEADER = "fatName";
     public final static String CARBO_HEADER = "carboName";
     public final static String DATE_HEADER = "date";
+    public final static String TIME_HEADER = "time";
 
 
     public Cursor cur;
@@ -46,7 +47,8 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
                 CAL_HEADER + " TEXT ," +
                 FAT_HEADER + " TEXT," +
                 CARBO_HEADER + " TEXT," +
-                DATE_HEADER + " TEXT )";
+                DATE_HEADER + " TEXT," +
+                TIME_HEADER + " TEXT )";
         db.execSQL(CREATE_TABLE_MSG);
 
 
@@ -62,17 +64,35 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = sdf.format(c.getTime());
-        newData.put(DATE_HEADER,strDate);
+        String date = strDate.substring(0,10);
+        String time = strDate.substring(11,19);
+
+        newData.put(DATE_HEADER,date);
+        newData.put(TIME_HEADER,time);
         //Then insert
         dbSQLite.insert(TABLE_NAME,null , newData);
 
     }
 
+    public void updateItem(SQLiteDatabase dbSQLite,long id,String sName,String cals,String fats, String carbos,String date, String time){
+        ContentValues newData = new ContentValues();
+        newData.put(NAME_HEADER, sName);
+        newData.put(CAL_HEADER, cals);
+        newData.put(FAT_HEADER, fats);
+        newData.put(CARBO_HEADER, carbos);
+        newData.put(DATE_HEADER,date);
+        newData.put(TIME_HEADER,time);
+        //Then insert
+        dbSQLite.update(TABLE_NAME,newData,ID_HEADER + "=" + id,null);
+
+    }
+
     public ArrayList<String> readItem(SQLiteDatabase dbSQLite){
-        cur = dbSQLite.rawQuery("select * from " + TABLE_NAME,null);
+
+        cur = dbSQLite.rawQuery("select * from " + TABLE_NAME+" order by "+ DATE_HEADER +" ASC, "+ TIME_HEADER+" ASC;" ,null);
         int column = cur.getCount();
         cur.moveToFirst();
-        String foodName, cals,fats,carbos,foodDate;
+        String foodName, cals,fats,carbos,foodDate,foodTime;
         ArrayList<String> oneRowData = new ArrayList<>();
         while(!cur.isAfterLast()){
             foodName = cur.getString(cur.getColumnIndex(NAME_HEADER));
@@ -80,8 +100,9 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
             fats = cur.getString(cur.getColumnIndex(FAT_HEADER));
             carbos = cur.getString(cur.getColumnIndex(CARBO_HEADER));
             foodDate = cur.getString(cur.getColumnIndex(DATE_HEADER));
+            foodTime = cur.getString(cur.getColumnIndex(TIME_HEADER));
 
-            String allData = foodName+"_" +cals+"_" +fats+"_" +carbos+"_" +foodDate;
+            String allData = foodName+"_" +cals+"_" +fats+"_" +carbos+"_" +foodDate+"_" +foodTime;
 
             oneRowData.add(allData);
             cur.moveToNext();
@@ -91,6 +112,11 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
             System.out.println(cur.getColumnName(i)+ "-----");
         }
         return oneRowData;
+    }
+
+    public void deleteItem(SQLiteDatabase db, long id){
+        db.delete(TABLE_NAME, ID_HEADER + "=" + id, null);
+        Log.i(ACTIVITY_NAME, "Delete item");
     }
 
     @Override

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarTrackVertical="@color/primary"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+    tools:context="com.example.a29751.finalproject.FoodTracker"
+    tools:showIn="@layout/activity_food_tracker">
+
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:text="@string/foodName"
+
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                    <EditText
+                        android:id="@+id/foodName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:text="@string/fd_calsName"
+
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+
+                    <EditText
+                        android:id="@+id/fd_cals"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:layout_weight="1"
+                        android:text="@string/fd_fatName"
+                        android:textSize="20dp"
+                        android:textStyle="bold"/>
+
+
+                    <EditText
+                        android:id="@+id/fd_fats"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:layout_weight="1"
+                        android:text="@string/fd_CarboName"
+
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+
+                    <EditText
+                        android:id="@+id/fd_cbs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/fd_saveBtn"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="50dp"
+                    android:background="@drawable/button_round"
+                    android:text="@string/fd_saveText" />
+            </LinearLayout>
+        </ScrollView>
+
+
+
+
+
+</android.support.constraint.ConstraintLayout>

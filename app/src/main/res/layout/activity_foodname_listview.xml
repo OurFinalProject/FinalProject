@@ -10,7 +10,7 @@ android:gravity="clip_horizontal">
     android:id="@+id/foodImageView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:srcCompat="@drawable/ic_food_name" />
+    app:srcCompat="@drawable/fooditem" />
 
 <TextView
     android:id = "@+id/food_nametext"
@@ -19,7 +19,7 @@ android:gravity="clip_horizontal">
     android:layout_marginLeft="10dp"
     android:textSize="20dp"
     android:textStyle="bold"
-    android:textColor="@android:color/black"
+    android:textColor="@android:color/white"
     android:layout_weight="1"
     android:text="TextView" />
 </LinearLayout>
