@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:text="delete"
+        android:text="@string/Activy_delete"
         app:layout_constraintTop_toBottomOf="@+id/fragmentTime"/>
 
 </android.support.constraint.ConstraintLayout>

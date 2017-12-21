@@ -18,18 +18,20 @@ import android.widget.TextView;
 
 public class ActivityTrackingFragment extends Fragment {
     Button deleteButton;
-
+    SQLiteDatabase db;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_tracking_fragment, container, false);
-
+        activityTrackingDatabaseHelper dbHelper = new activityTrackingDatabaseHelper(getActivity()) ;
+        db = dbHelper.getWritableDatabase();
 
         Bundle bundle = this.getArguments();
         final String type = bundle.getString("type");
         final int minutes = bundle.getInt("minutes");
         final String commnets = bundle.getString("comments");
         final String time = bundle.getString("time");
+        final String id = bundle.getString("id");
         TextView typeView = view.findViewById(R.id.fragmentType);
         typeView.setText(""+type);
         TextView minView = view.findViewById(R.id.fragmentMin);
@@ -41,7 +43,14 @@ public class ActivityTrackingFragment extends Fragment {
 
 
         deleteButton=view.findViewById(R.id.deleteButton);
-
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var1) {
+                    db.delete(activityTrackingDatabaseHelper.TABLE_NAME, activityTrackingDatabaseHelper.KEY_ID + "=" + id, null);
+                    getActivity().finish();
+                    Intent intent = getActivity().getIntent();
+                    startActivity(intent);
+            }
+        });
 
         return view;
     }

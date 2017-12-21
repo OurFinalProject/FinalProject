@@ -23,4 +23,11 @@
     <string name="fd_saveText">Save Record</string>
     <string name="fd_Date">Save Date</string>
 
+    <!--Activity Tracking!-->
+    <string name="Activities">Activities</string>
+    <string name="Activy_time">Time</string>
+    <string name="Activy_comments">Comments</string>
+    <string name="Activy_save">SAVE</string>
+    <string name="Activy_delete">delete</string>
+
 </resources>

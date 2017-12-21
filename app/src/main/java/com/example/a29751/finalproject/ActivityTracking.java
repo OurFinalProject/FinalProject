@@ -17,10 +17,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -57,7 +61,7 @@ public class ActivityTracking extends AppCompatActivity {
     SQLiteDatabase db;
     ArrayList<Activites> messages = new ArrayList<Activites>();
     ProgressBar progressBar;
-
+    Snackbar snackbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +76,8 @@ public class ActivityTracking extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setProgress(0);
-
-        //Snackbar snackbar = Snackbar.make(coordinatorlayout, "Welcome to Activity Tracking", Snackbar.LENGTH_LONG);
-        //snackbar.show();
+        snackbar = Snackbar.make(saveButton, "Welcome to Activity Tracking", Snackbar.LENGTH_LONG);
+        snackbar.show();
 
         String[] arraySpinner= new String[] {
                 "Running", "Walking", "Biking", "Swimming", "Skating"
@@ -90,7 +93,8 @@ public class ActivityTracking extends AppCompatActivity {
         c.moveToFirst();
         while(!c.isAfterLast()) {
             Log.i(ACTIVITY_NAME, "SQL MESSAGE " + c.getString(c.getColumnIndex(dbHelper.KEY_TYPE)));
-            Activites act = new Activites(c.getString(c.getColumnIndex(dbHelper.KEY_TYPE)),
+            Activites act = new Activites(c.getString(c.getColumnIndex(dbHelper.KEY_ID)),
+                    c.getString(c.getColumnIndex(dbHelper.KEY_TYPE)),
                     c.getInt(c.getColumnIndex(dbHelper.KEY_TIME)),
                     c.getString(c.getColumnIndex(dbHelper.KEY_COMMENTS)));
                      messages.add(act);
@@ -126,8 +130,8 @@ public class ActivityTracking extends AppCompatActivity {
                 if (comments.isEmpty()) {
                     comments = "No comment";
                 }
-                Activites act = new Activites(type, time, comments);
-                messages.add(act);
+                //Activites act = new Activites(type, time, comments);
+                //messages.add(act);
 
                 ContentValues initialValues = new ContentValues();
                 adapter.notifyDataSetChanged();
@@ -138,6 +142,10 @@ public class ActivityTracking extends AppCompatActivity {
                 db.insert(TABLE_NAME,null,initialValues);
                 timeText.setText("");
                 commentsText.setText("");
+
+                finish();
+                Intent intent = getIntent();
+                startActivity(intent);
             }
         });
 
@@ -156,6 +164,7 @@ public class ActivityTracking extends AppCompatActivity {
                 bundle.putInt("minutes", act.getMinutes());
                 bundle.putString("comments",act.getComments());
                 bundle.putString("time", act.getTime().toString());
+                bundle.putString("id", act.getID().toString());
 
                 ActivityTrackingFragment messageFragment = new ActivityTrackingFragment();
 
@@ -175,12 +184,72 @@ public class ActivityTracking extends AppCompatActivity {
 
         ForecastQuery forecastQuery = new ForecastQuery();
         forecastQuery.execute();
+
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                builder1.setTitle("author: Yongdan Wang \nVerison: 1.3 \n How to use:");
+                builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+                AlertDialog dialog1 = builder1.create();
+
+                dialog1.show();
+            }
+        });
+
     }
+
+    public boolean onCreateOptionsMenu (Menu m) {
+        Log.i(ACTIVITY_NAME, "SQL MESSAGE MENU " );
+        super.onCreateOptionsMenu(m);
+        getMenuInflater().inflate(R.menu.help_menu, m);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem mi) {
+
+        switch (mi.getItemId()) {
+            case R.id.action_one:
+                Log.d("Toolbar", "Choice 2 selected");
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                builder1.setTitle("author: Yongdan Wang \nVerison: 1.3 \n How to use:");
+                builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+                AlertDialog dialog1 = builder1.create();
+
+                dialog1.show();
+                break;
+
+            case R.id.about:
+                Context context = getApplicationContext();
+                CharSequence text = "Version 1.0 by Yongdan Wang";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                break;
+        }
+
+
+        return true;
+    }
+
 
     public void onDestroy() {
         db.close();
         super.onDestroy();
     }
+
+
 
     private class ForecastQuery extends AsyncTask<String, Integer, String> {
 
@@ -269,12 +338,18 @@ public class ActivityTracking extends AppCompatActivity {
         int minutes;
         String comments;
         Date currentTime;
+        String id;
 
-        public Activites(String t, int m, String c){
+        public Activites(String i, String t, int m, String c){
+            id=i;
             type=t;
             minutes=m;
             comments=c;
             currentTime = Calendar.getInstance().getTime();
+        }
+
+        public String getID(){
+            return  id;
         }
 
         public String getType(){
