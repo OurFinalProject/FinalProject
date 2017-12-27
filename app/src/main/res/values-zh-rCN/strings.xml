@@ -12,6 +12,25 @@
     <string name="fd_fatName">脂肪</string>
     <string name="fd_CarboName">碳水化合物</string>
     <string name="fd_saveText">保存记录</string>
-    <string name="fd_Date">保存时间</string>
+    <string name="fd_Date">记录日期</string>
+    <string name="fd_Time">记录时间</string>
 
+    <string name="fd_title1">新建美食</string>
+    <string name="fd_title2">美食记录</string>
+    <string name="fd_title3">美食汇总</string>
+    <string name="fd_update">更新记录</string>
+    <string name="fd_delete">删除记录</string>
+    <string name="fd_aboutTitle">关于美食</string>
+    <string name="fd_dialogTitle">帮助信息</string>
+    <string name="fd_cancel">取消</string>
+    <string name="title_activity_food_history_info">美食历史信息</string>
+    <string name="fd_lastday">昨天录入信息</string>
+    <string name="fd_perday">平均每天摄入量</string>
+    <string name="title_activity_food_tracker">营养食品记录</string>
+    <string name="fd_notftitle">美食通知</string>
+    <string name="fd_notfcontext">请查看平均每天摄入量</string>
+    <string name="fd_help">版本1.0, 设计者 Liangliang.\n在这个软件里有三个主要功能，请单击界面上方的图标查看.</string>
+    <string name="fd_namewarn">请输入一个食品名称</string>
+    <string name="fd_snack">添加新食品</string>
+    <string name="fd_detail">详细信息</string>
 </resources>

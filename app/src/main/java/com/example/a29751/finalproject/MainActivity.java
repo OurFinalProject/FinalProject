@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         foodNutrition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,FoodNutrition.class));
+                startActivity(new Intent(MainActivity.this,FoodTracker.class));
             }
         });
 
