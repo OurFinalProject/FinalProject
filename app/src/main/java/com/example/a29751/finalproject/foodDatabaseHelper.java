@@ -92,9 +92,10 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
         cur = dbSQLite.rawQuery("select * from " + TABLE_NAME+" order by "+ DATE_HEADER +" ASC, "+ TIME_HEADER+" ASC;" ,null);
         int column = cur.getCount();
         cur.moveToFirst();
-        String foodName, cals,fats,carbos,foodDate,foodTime;
+        String foodId, foodName, cals,fats,carbos,foodDate,foodTime;
         ArrayList<String> oneRowData = new ArrayList<>();
         while(!cur.isAfterLast()){
+            foodId = cur.getString(cur.getColumnIndex(ID_HEADER));
             foodName = cur.getString(cur.getColumnIndex(NAME_HEADER));
             cals = cur.getString(cur.getColumnIndex(CAL_HEADER));
             fats = cur.getString(cur.getColumnIndex(FAT_HEADER));
@@ -102,7 +103,7 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
             foodDate = cur.getString(cur.getColumnIndex(DATE_HEADER));
             foodTime = cur.getString(cur.getColumnIndex(TIME_HEADER));
 
-            String allData = foodName+"_" +cals+"_" +fats+"_" +carbos+"_" +foodDate+"_" +foodTime;
+            String allData = foodId+"_" +foodName+"_" +cals+"_" +fats+"_" +carbos+"_" +foodDate+"_" +foodTime;
 
             oneRowData.add(allData);
             cur.moveToNext();
@@ -115,7 +116,8 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
     }
 
     public void deleteItem(SQLiteDatabase db, long id){
-        db.delete(TABLE_NAME, ID_HEADER + "=" + id, null);
+        db.delete(foodDatabaseHelper.TABLE_NAME, foodDatabaseHelper.ID_HEADER + "=" + id, null);
+
         Log.i(ACTIVITY_NAME, "Delete item");
     }
 
@@ -131,7 +133,7 @@ public class foodDatabaseHelper extends SQLiteOpenHelper{
     {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME); //delete what was there previously
         onCreate(db);
-        Log.i(ACTIVITY_NAME, "Calling onCreate");
+
         Log.i(ACTIVITY_NAME, "Calling onDowngrade, newVersion=" + newVersion + ", oldVersion=" + oldVersion);
 
     }

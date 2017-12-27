@@ -44,6 +44,11 @@ public class FoodTracker extends AppCompatActivity {
         cals = (TextView)findViewById(R.id.fd_cals);
         fats = (TextView)findViewById(R.id.fd_fats);
         carbos = (TextView)findViewById(R.id.fd_cbs);
+        fName.setText("");
+        cals.setText("0");
+        fats.setText("0");
+        carbos.setText("0");
+
         Button btnSave = (Button)findViewById(R.id.fd_saveBtn);
 
         foodData = new foodDatabaseHelper(this);
@@ -56,12 +61,19 @@ public class FoodTracker extends AppCompatActivity {
 
                 String foodName = fName.getText().toString();
 
+                if(foodName.length()>0){
+
                 foodData.saveItem(fdbSQLite,foodName,cals.getText().toString(),
                         fats.getText().toString(),carbos.getText().toString());
 
-                Intent intent = new Intent(FoodTracker.this, FoodHistoryInfo.class);
 
+
+                Intent intent = new Intent(FoodTracker.this, FoodHistoryInfo.class);
                 startActivity(intent);
+                }
+                else
+                  Toast.makeText(FoodTracker.this,R.string.fd_namewarn , Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -81,24 +93,13 @@ public class FoodTracker extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem mi){
-        String snackText = "Add New Food";
+        String snackText = getString(R.string.fd_snack);
 
         int id = mi.getItemId();
         switch(id){
             case R.id.fd_action1:
 
-               /* FoodAddfragment addFragment= new FoodAddfragment();
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fd_mainframe, addFragment);
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
-*/
-
-
-           Snackbar.make(findViewById(R.id.fd_action1), snackText, Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.fd_action1), snackText, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 Log.d("FoodTracker",snackText);
                 break;
@@ -114,9 +115,9 @@ public class FoodTracker extends AppCompatActivity {
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.fooditem)
-                                .setContentTitle("My notification")
+                                .setContentTitle(getString(R.string.fd_notftitle))
 
-                                .setContentText("You clicked FoodSummary");
+                                .setContentText(getString(R.string.fd_notfcontext));
                 Intent resultIntent = new Intent(this, FragmentActivity.class);
                 PendingIntent resultPendingIntent = PendingIntent.getActivity( this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(resultPendingIntent);
@@ -132,8 +133,7 @@ public class FoodTracker extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.fd_dialogTitle)
                         .setIcon(R.drawable.helpinfo)
-                        .setMessage("Version 1.0, by Liangliang.\n" +
-                                "There are two main functions in this activity, you can click icon on the top.")
+                        .setMessage(R.string.fd_help)
 
                         .setNegativeButton(R.string.fd_cancel, new DialogInterface.OnClickListener() {
                             @Override

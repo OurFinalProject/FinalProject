@@ -35,5 +35,15 @@
     <string name="fd_delete">Delete</string>
     <string name="title_activity_food_history_info">FoodHistoryInfo</string>
 
+    <string name="fd_lastday">Last Day Information</string>
+    <string name="fd_perday">Average Value Per Day</string>
+    <string name="fd_notftitle">Food notification</string>
+    <string name="fd_notfcontext"> You Can See Average Nutrition Per Day</string>
+    <string name="fd_help">Version 1.0, by Liangliang.\nThere are three main functions in this activity, you can click icons on the top.</string>
+
+    <string name="fd_namewarn">Please input a food name</string>
+    <string name="fd_snack">Add New Food</string>
+    <string name="fd_detail">Detail Information</string>
+
 
 </resources>

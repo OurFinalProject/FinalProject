@@ -2,6 +2,7 @@ package com.example.a29751.finalproject;
 
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -22,11 +23,14 @@ public class FoodFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private foodDatabaseHelper foodData;
+    private SQLiteDatabase fdbSQLite;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
       //Bundle message
         Bundle info = getArguments();
-        final long id = info.getLong("ID");
+      //  final long id = info.getLong("ID");
+        final String fdID=info.getString("FID");
         final String fName = info.getString("FNAME");
         String fdcal = info.getString("FDCAL");
         String fdfat = info.getString("FDFAT");
@@ -50,6 +54,10 @@ public class FoodFragment extends Fragment {
         dateDetails.setText(fddate);
         timeDetails.setText(fdtime);
 
+
+        foodData = new foodDatabaseHelper(getActivity());
+        fdbSQLite = foodData.getWritableDatabase();
+
         Button btnUpdate = (Button)view.findViewById(R.id.fd_updatebtn);
         Button btnDelete = (Button)view.findViewById(R.id.fd_deletebtn);
 
@@ -58,18 +66,18 @@ public class FoodFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent updateIntent = new Intent();
+                String fName = nameDetails.getText().toString();
+                String fdcal = calDetails.getText().toString();
+                String fdfat = fatDetails.getText().toString();
+                String fdcarbo = carboDetails.getText().toString();
+                String fddate = dateDetails.getText().toString();
+                String fdtime = timeDetails.getText().toString();
 
-                updateIntent.putExtra("FID", id);
-                updateIntent.putExtra("FNAME",nameDetails.getText());
-                updateIntent.putExtra("FDCAL",calDetails.getText());
-                updateIntent.putExtra("FDFAT",fatDetails.getText());
-                updateIntent.putExtra("FDCARBO",carboDetails.getText());
-                updateIntent.putExtra("FDDATE",dateDetails.getText());
-                updateIntent.putExtra("FDTIME",timeDetails.getText());
+                foodData.updateItem(fdbSQLite,Integer.parseInt(fdID),fName,fdcal,fdfat,fdcarbo,fddate,fdtime);
+                getActivity().finish();
+                Intent intent = getActivity().getIntent();
+                startActivity(intent);
 
-                getActivity().setResult(Activity.RESULT_OK, updateIntent);
-             //   getActivity().finish();
             }
         });
 
@@ -78,10 +86,11 @@ public class FoodFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent delIntent = new Intent();
-                delIntent.putExtra("DELETEID", id);
-                getActivity().setResult(1, delIntent);
-             //   getActivity().finish();
+                foodData.deleteItem(fdbSQLite,  Integer.parseInt(fdID));
+                getActivity().finish();
+                Intent intent = getActivity().getIntent();
+                startActivity(intent);
+
             }
         });
 

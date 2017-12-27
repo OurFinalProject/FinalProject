@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 public class FoodHistoryInfo extends AppCompatActivity {
     private ArrayList<String> flistAllItem = new ArrayList<>();
+    private ArrayList<String> fIdList = new ArrayList<>();
     private ArrayList<String> fnameList = new ArrayList<>();
     private ArrayList<String> fcalsList = new ArrayList<>();
     private ArrayList<String> ffatsList = new ArrayList<>();
@@ -59,12 +60,13 @@ public class FoodHistoryInfo extends AppCompatActivity {
 
         for(int i=0;i<flistAllItem.size();i++){
             foodSplitString= flistAllItem.get(i).split("_");
-            fnameList.add(foodSplitString[0]);
-            fcalsList.add(foodSplitString[1]);
-            ffatsList.add(foodSplitString[2]);
-            fCarboList.add(foodSplitString[3]);
-            fDateList.add(foodSplitString[4]);
-            fTimeList.add(foodSplitString[5]);
+            fIdList.add(foodSplitString[0]);
+            fnameList.add(foodSplitString[1]);
+            fcalsList.add(foodSplitString[2]);
+            ffatsList.add(foodSplitString[3]);
+            fCarboList.add(foodSplitString[4]);
+            fDateList.add(foodSplitString[5]);
+            fTimeList.add(foodSplitString[6]);
         }
         foodlistAdapter.notifyDataSetChanged();
 
@@ -79,7 +81,8 @@ public class FoodHistoryInfo extends AppCompatActivity {
                 t.show();
 
                 Bundle args = new Bundle();
-                args.putLong("ID",id);
+           //     args.putLong("ID",id);
+                args.putString("FID",fIdList.get(position));
                 args.putString("FNAME",fnameList.get(position));
                 String fdcal = fcalsList.get(position);
                 args.putString("FDCAL",fdcal);
@@ -109,42 +112,7 @@ public class FoodHistoryInfo extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onActivityReenter(int resultCode, Intent data) {
-        if(resultCode == FoodHistoryInfo.RESULT_OK){
 
-            long passID = data.getLongExtra("FID",-1);
-
-            String fName = data.getStringExtra("FDNAME");
-            String fdcal = data.getStringExtra("FDCAL");
-            String fdfat = data.getStringExtra("FDFAT");
-            String fdcarbo = data.getStringExtra("FDCARBO");
-            String fddate = data.getStringExtra("FDDATE");
-            String fdtime = data.getStringExtra("FDTIME");
-
-            foodData.updateItem(fdbSQLite,passID,fName,fdcal,fdfat,fdcarbo,fddate,fdtime);
-
-            Intent intent = getIntent();
-            startActivity(intent);//refresh this activity to show new list
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if(requestCode == RQCODE){
-
-        }
-        if(resultCode == 1){
-
-            long passID = data.getLongExtra("DELETEID",-1);
-            foodData.deleteItem(fdbSQLite, passID);//delete database item
-
-           // finish();
-            Intent intent = getIntent();
-            startActivity(intent);//refresh this activity to show new list
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

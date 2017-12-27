@@ -10,7 +10,7 @@ android:gravity="clip_horizontal">
     android:id="@+id/foodImageView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:srcCompat="@drawable/fooditem" />
+    app:srcCompat="@android:drawable/ic_media_ff" />
 
 <TextView
     android:id = "@+id/food_nametext"
