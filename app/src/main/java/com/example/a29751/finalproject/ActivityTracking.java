@@ -89,20 +89,10 @@ public class ActivityTracking extends AppCompatActivity {
         dbHelper = new activityTrackingDatabaseHelper(this) ;
         db = dbHelper.getWritableDatabase();
 
-        Cursor c = db.rawQuery("select * from " + TABLE_NAME,null);
-        c.moveToFirst();
-        while(!c.isAfterLast()) {
-            Log.i(ACTIVITY_NAME, "SQL MESSAGE " + c.getString(c.getColumnIndex(dbHelper.KEY_TYPE)));
-            Activites act = new Activites(c.getString(c.getColumnIndex(dbHelper.KEY_ID)),
-                    c.getString(c.getColumnIndex(dbHelper.KEY_TYPE)),
-                    c.getInt(c.getColumnIndex(dbHelper.KEY_TIME)),
-                    c.getString(c.getColumnIndex(dbHelper.KEY_COMMENTS)));
-                     messages.add(act);
-            c.moveToNext();
-        }
+
 
         final ActivityTrackingAdapter adapter =  new ActivityTrackingAdapter(this);
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
 
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -149,38 +139,22 @@ public class ActivityTracking extends AppCompatActivity {
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-
-                Activites act = adapter.getActivity(position);
-
-                Toast.makeText(getBaseContext(), act.toString(), Toast.LENGTH_LONG).show();
 
 
-                Bundle bundle = new Bundle();
-                bundle.putString("type",act.getType());
-                bundle.putInt("minutes", act.getMinutes());
-                bundle.putString("comments",act.getComments());
-                bundle.putString("time", act.getTime().toString());
-                bundle.putString("id", act.getID().toString());
+        Bundle bundle = new Bundle();
 
-                ActivityTrackingFragment messageFragment = new ActivityTrackingFragment();
+        ActivityTrackingFragment messageFragment = new ActivityTrackingFragment();
 
-                messageFragment.setArguments(bundle);
-                FragmentManager fragmentManager =getFragmentManager();
+        messageFragment.setArguments(bundle);
+        FragmentManager fragmentManager =getFragmentManager();
 
-                if (fragmentManager.getBackStackEntryCount() > 0) {
-                    FragmentManager.BackStackEntry first = fragmentManager.getBackStackEntryAt(0);
-                    fragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                }
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = fragmentManager.getBackStackEntryAt(0);
+            fragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
 
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.detailFrameLayout, messageFragment).addToBackStack(null).commit();
-
-            }
-        });
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.detailFrameLayout, messageFragment).addToBackStack(null).commit();
 
         ForecastQuery forecastQuery = new ForecastQuery();
         forecastQuery.execute();
