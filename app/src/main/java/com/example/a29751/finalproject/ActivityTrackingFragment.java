@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,9 +25,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.example.a29751.finalproject.activityTrackingDatabaseHelper.TABLE_NAME;
 
@@ -36,6 +41,7 @@ import static com.example.a29751.finalproject.activityTrackingDatabaseHelper.TAB
 
 public class ActivityTrackingFragment extends Fragment {
     Button deleteButton;
+    Button editButton;
     SQLiteDatabase db;
     String ACid;
     ArrayList<ActivityTrackingFragment.Activites> messages = new ArrayList<ActivityTrackingFragment.Activites>();
@@ -65,10 +71,19 @@ public class ActivityTrackingFragment extends Fragment {
         c.moveToFirst();
         while(!c.isAfterLast()) {
             Log.i(ACTIVITY_NAME, "SQL MESSAGE " + c.getString(c.getColumnIndex(dbHelper.KEY_TYPE)));
+            String dateString=c.getString(c.getColumnIndex(dbHelper.KEY_DATE));
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            Date recordDate=Calendar.getInstance().getTime();
+            try {
+                recordDate = format.parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             ActivityTrackingFragment.Activites act = new ActivityTrackingFragment.Activites(c.getString(c.getColumnIndex(dbHelper.KEY_ID)),
                     c.getString(c.getColumnIndex(dbHelper.KEY_TYPE)),
                     c.getInt(c.getColumnIndex(dbHelper.KEY_TIME)),
-                    c.getString(c.getColumnIndex(dbHelper.KEY_COMMENTS)));
+                    c.getString(c.getColumnIndex(dbHelper.KEY_COMMENTS)),
+                    recordDate);
             messages.add(act);
             c.moveToNext();
         }
@@ -89,10 +104,10 @@ public class ActivityTrackingFragment extends Fragment {
                 String time = act.getTime().toString();
                 ACid = act.getID().toString();
 
-                typeView.setText(" " + type);
-                minView.setText(" " + minutes + " minutes");
-                commView.setText(" " + commnets);
-                timeView.setText(" " + time);
+                typeView.setText(type);
+                minView.setText(minutes + " minutes");
+                commView.setText(commnets);
+                timeView.setText(time);
 
             }
         });
@@ -109,6 +124,29 @@ public class ActivityTrackingFragment extends Fragment {
             }
         });
 
+        editButton=view.findViewById(R.id.editButton);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var1) {
+
+                String type = typeView.getText().toString();
+                String minutes = minView.getText().toString();
+                String commnets = commView.getText().toString();
+
+                ContentValues cv = new ContentValues();
+                cv.put(activityTrackingDatabaseHelper.KEY_TYPE,type);
+                cv.put(activityTrackingDatabaseHelper.KEY_TIME,minutes);
+                cv.put(activityTrackingDatabaseHelper.KEY_COMMENTS,commnets);
+
+                db.update(activityTrackingDatabaseHelper.TABLE_NAME,
+                         cv,
+                        activityTrackingDatabaseHelper.KEY_ID + "=" + ACid,
+                        null);
+                getActivity().finish();
+                Intent intent = getActivity().getIntent();
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -122,7 +160,7 @@ public class ActivityTrackingFragment extends Fragment {
         }
 
         public String getItem (int position) {
-            return messages.get(position).getType();
+            return messages.get(position).getType() + " " + messages.get(position).getMinutes() + " minutes";
         }
 
         public Activites getActivity (int position) {
@@ -149,12 +187,12 @@ public class ActivityTrackingFragment extends Fragment {
         Date currentTime;
         String id;
 
-        public Activites(String i, String t, int m, String c){
+        public Activites(String i, String t, int m, String c, Date d){
             id=i;
             type=t;
             minutes=m;
             comments=c;
-            currentTime = Calendar.getInstance().getTime();
+            currentTime=d;
         }
 
         public String getID(){

@@ -38,9 +38,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import android.support.design.widget.Snackbar;
 
@@ -233,7 +237,7 @@ public class ActivityTracking extends AppCompatActivity {
         private Bitmap picture;
         String iconName;
         int totalMinutes=0;
-
+        int totalMinutes2=0;
         @Override
         protected String doInBackground(String... params) {
 ;
@@ -241,13 +245,25 @@ public class ActivityTracking extends AppCompatActivity {
                 this.publishProgress(25);
                 TimeUnit.SECONDS.sleep(1);
 
+                Date currentDate= new Date();
+                int currentMonth = currentDate.getMonth();
+
                 Cursor c1 = db.rawQuery("select * from " + TABLE_NAME,null);
                 this.publishProgress(50);
                 TimeUnit.SECONDS.sleep(1);
                 c1.moveToFirst();
                 while(!c1.isAfterLast()) {
                     Log.i(ACTIVITY_NAME, "SQL MESSAGE " + c1.getString(c1.getColumnIndex(dbHelper.KEY_TYPE)));
-                    totalMinutes+=c1.getInt(c1.getColumnIndex(dbHelper.KEY_TIME));
+                    Log.i(ACTIVITY_NAME, "SQL DATE " + c1.getString(c1.getColumnIndex(dbHelper.KEY_DATE)));
+                    String dateString=c1.getString(c1.getColumnIndex(dbHelper.KEY_DATE));
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                    Date recordDate = format.parse(dateString);
+                    int month = recordDate.getMonth();
+                    if ( month == currentMonth ) {
+                        totalMinutes += c1.getInt(c1.getColumnIndex(dbHelper.KEY_TIME));
+                    } else {
+                        totalMinutes2 += c1.getInt(c1.getColumnIndex(dbHelper.KEY_TIME));
+                    }
                     c1.moveToNext();
                 }
 
@@ -259,8 +275,9 @@ public class ActivityTracking extends AppCompatActivity {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-
 
 
             return null;
@@ -274,7 +291,8 @@ public class ActivityTracking extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             totalTime = (TextView) findViewById(R.id.totalTime);
-            totalTime.setText("Total activites time is\n" + totalMinutes + "minutes");
+            totalTime.setText("Total activites time for this month is\n" + totalMinutes + " minutes\n" +
+                    "Total activites time for last month is\n" + totalMinutes2 + " minutes\n");
         }
     }
 
@@ -314,12 +332,12 @@ public class ActivityTracking extends AppCompatActivity {
         Date currentTime;
         String id;
 
-        public Activites(String i, String t, int m, String c){
+        public Activites(String i, String t, int m, String c, Date d){
             id=i;
             type=t;
             minutes=m;
             comments=c;
-            currentTime = Calendar.getInstance().getTime();
+            currentTime = d;
         }
 
         public String getID(){

@@ -20,5 +20,6 @@
     <string name="Activy_comments">备注</string>
     <string name="Activy_save">保存</string>
     <string name="Activy_delete">删除</string>
+    <string name="Activy_edit">修改</string>
 
 </resources>

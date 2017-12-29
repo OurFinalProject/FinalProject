@@ -29,5 +29,6 @@
     <string name="Activy_comments">Comments</string>
     <string name="Activy_save">SAVE</string>
     <string name="Activy_delete">delete</string>
+    <string name="Activy_edit">edit</string>
 
 </resources>
