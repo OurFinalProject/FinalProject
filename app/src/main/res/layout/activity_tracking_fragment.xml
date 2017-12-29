@@ -5,42 +5,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp" >
 
-    <TextView
+    <ListView
+        android:id="@+id/listView"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        app:layout_constraintTop_toBottomOf="@+id/saveButton">
+    </ListView>
+
+    <EditText
         android:id="@+id/fragmentType"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
-        android:hint="Type" />
+        android:layout_marginTop="5dp"
+        android:hint="Type"
+        app:layout_constraintLeft_toRightOf="@+id/listView"/>
 
-    <TextView
+    <EditText
         android:id="@+id/fragmentMin"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="5dp"
         android:hint="Minutes"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentType" />
+        app:layout_constraintTop_toBottomOf="@+id/fragmentType"
+        app:layout_constraintLeft_toRightOf="@+id/listView"/>
 
-    <TextView
+    <EditText
         android:id="@+id/fragmentComm"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:hint="Comments"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentMin"/>
+        app:layout_constraintTop_toBottomOf="@+id/fragmentMin"
+        app:layout_constraintLeft_toRightOf="@+id/listView"/>
 
     <TextView
         android:id="@+id/fragmentTime"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="5dp"
         android:hint="Enter time"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentComm" />
+        app:layout_constraintTop_toBottomOf="@+id/fragmentComm"
+        app:layout_constraintLeft_toRightOf="@+id/listView"/>
 
     <Button
         android:id="@+id/deleteButton"
@@ -49,6 +60,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:text="@string/Activy_delete"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentTime"/>
+        app:layout_constraintTop_toBottomOf="@+id/fragmentTime"
+        app:layout_constraintLeft_toRightOf="@+id/listView"/>
 
 </android.support.constraint.ConstraintLayout>
