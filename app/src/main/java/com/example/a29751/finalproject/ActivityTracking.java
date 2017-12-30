@@ -66,6 +66,7 @@ public class ActivityTracking extends AppCompatActivity {
     ArrayList<Activites> messages = new ArrayList<Activites>();
     ProgressBar progressBar;
     Snackbar snackbar;
+    AlertDialog alertDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +103,7 @@ public class ActivityTracking extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog alertDialog = new AlertDialog.Builder(ActivityTracking.this).create();
+                alertDialog = new AlertDialog.Builder(ActivityTracking.this).create();
                 alertDialog.setTitle("Confirm");
                 alertDialog.setMessage("Add new record?");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -137,6 +138,7 @@ public class ActivityTracking extends AppCompatActivity {
                 timeText.setText("");
                 commentsText.setText("");
 
+                alertDialog.dismiss();
                 finish();
                 Intent intent = getIntent();
                 startActivity(intent);
