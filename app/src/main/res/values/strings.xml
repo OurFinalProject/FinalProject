@@ -9,7 +9,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-   
+
     <string name="sportMenu">Sport</string>
     <string name="foodMenu">Nutrition</string>
     <string name="houseMenu">Home</string>
@@ -21,7 +21,30 @@
     <string name="fd_fatName">Fat</string>
     <string name="fd_CarboName">Carbohydrate</string>
     <string name="fd_saveText">Save Record</string>
-    <string name="fd_Date">Save Date</string>
+    <string name="fd_Date">Record Date</string>
+    <string name="fd_Time">Record Time</string>
+    <string name="title_activity_food_tracker">FoodTracker</string>
+
+    <string name="fd_title1">New Food</string>
+    <string name="fd_title2">Food History</string>
+    <string name="fd_title3">Summary</string>
+    <string name="fd_aboutTitle">Food About</string>
+    <string name="fd_dialogTitle">Help Info</string>
+    <string name="fd_cancel">Cancel</string>
+    <string name="fd_update">Update</string>
+    <string name="fd_delete">Delete</string>
+    <string name="title_activity_food_history_info">FoodHistoryInfo</string>
+
+    <string name="fd_lastday">Last Day Information</string>
+    <string name="fd_perday">Average Value Per Day</string>
+    <string name="fd_notftitle">Food notification</string>
+    <string name="fd_notfcontext"> You Can See Average Nutrition Per Day</string>
+    <string name="fd_help">Version 1.0, by Liangliang.\nThere are three main functions in this activity, you can click icons on the top.</string>
+
+    <string name="fd_namewarn">Please input a food name</string>
+    <string name="fd_snack">Add New Food</string>
+    <string name="fd_detail">Detail Information</string>
+
 
     <!--Activity Tracking!-->
     <string name="Activities">Activities</string>
