@@ -46,4 +46,12 @@
     <string name="fd_detail">Detail Information</string>
 
 
+    <!--Activity Tracking!-->
+    <string name="Activities">Activities</string>
+    <string name="Activy_time">Time</string>
+    <string name="Activy_comments">Comments</string>
+    <string name="Activy_save">SAVE</string>
+    <string name="Activy_delete">delete</string>
+    <string name="Activy_edit">edit</string>
+
 </resources>
