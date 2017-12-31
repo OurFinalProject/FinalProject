@@ -9,7 +9,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-   
+
     <string name="sportMenu">Sport</string>
     <string name="foodMenu">Nutrition</string>
     <string name="houseMenu">Home</string>
@@ -22,5 +22,27 @@
     <string name="fd_CarboName">Carbohydrate</string>
     <string name="fd_saveText">Save Record</string>
     <string name="fd_Date">Save Date</string>
+    <string name="title_activity_automoblie_details">AutomoblieDetails</string>
+    <string name="title_activity_automobile_details">AutomobileDetails</string>
+    <string name="title_activity_automain">Automain</string>
+
+    <!--auto-->
+    <string name="OK">Ok</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Summary">Infomation</string>
+    <string name="SumF">Last month Fuel:</string>
+    <string name="SumP">Last month Price AVG:</string>
+    <string name="Sumpermonth">Per month Fuel:</string>
+    <string name="Fuel">Fuel:</string>
+    <string name="Price">Price:</string>
+    <string name="Kilo">Kilometers:</string>
+    <string name="about">About</string>
+    <string name="list">List</string>
+    <string name="editbutton">Eidt</string>
+    <string name="savebutton">Save</string>
+    <string name="price">Price($): </string>
+    <string name="fuelL">Fuel(L)：</string>
+    <string name="KiloKM">Kiolmeter(Km): </string>
+    <string name="showdate">Date: </string>
 
 </resources>

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         autoMobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,Automobile.class));
+                startActivity(new Intent(MainActivity.this,Automain.class));
             }
         });
     }

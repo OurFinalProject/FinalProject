@@ -1,6 +1,8 @@
 package com.example.a29751.finalproject;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,9 +22,16 @@ import java.util.ArrayList;
 public class AutomobileListview extends AppCompatActivity {
 
     protected static final String ACTIVITY_NAME = "AutomobileListview";
-    public ArrayList<String> info=new ArrayList<>();
+    public ArrayList<String> info = new ArrayList<>();
     public AutoDatabaseHelper dbH;
     public SQLiteDatabase db;
+    public ArrayList<String> ID_ArrayList = new ArrayList<>();
+    public ArrayList<String> F_ArrayList = new ArrayList<>();
+    public ArrayList<String> P_ArrayList = new ArrayList<>();
+    public ArrayList<String> K_ArrayList = new ArrayList<>();
+    public ArrayList<String> D_ArrayList = new ArrayList<>();
+    private String[] auto;
+
 
 
     @Override
@@ -38,7 +47,7 @@ public class AutomobileListview extends AppCompatActivity {
         dbH = new AutoDatabaseHelper(this);
         db = dbH.getWritableDatabase();
 
-        Cursor cursor = db.rawQuery(" select * from " + dbH.TABLE_NAME,null);
+        final Cursor cursor = db.rawQuery(" select * from " + dbH.TABLE_NAME,null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {
             String message = cursor.getString(cursor.getColumnIndex(dbH.KEY_DATE));
@@ -52,8 +61,55 @@ public class AutomobileListview extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast t = Toast.makeText(AutomobileListview.this,messageAdapter.getItem(position),Toast.LENGTH_SHORT);
-                t.show();
+
+                Cursor cursorView = db.rawQuery(" select * from " + dbH.TABLE_NAME,null);
+                cursorView.moveToFirst();
+                String autoid,autof, autop, autok, autod;
+                ArrayList<String> oneData = new ArrayList<>();
+                while(!cursorView.isAfterLast()) {
+
+                    autoid = cursorView.getString(cursorView.getColumnIndex(dbH.KEY_ID));
+                    autof = cursorView.getString(cursorView.getColumnIndex(dbH.KEY_FUEL));
+                    autop = cursorView.getString(cursorView.getColumnIndex(dbH.KEY_PRICE));
+                    autok = cursorView.getString(cursorView.getColumnIndex(dbH.KEY_KILO));
+                    autod = cursorView.getString(cursorView.getColumnIndex(dbH.KEY_DATE));
+
+                    String allData = autoid+"_"+autof+"_"+autop+"_"+autok+"_"+autod;
+                    oneData.add(allData);
+                    cursorView.moveToNext();
+                }
+
+                for(int i = 0; i < oneData.size(); i++){
+                    auto = oneData.get(i).split("_");
+                    ID_ArrayList.add(auto[0]);
+                    F_ArrayList.add(auto[1]);
+                    P_ArrayList.add(auto[2]);
+                    K_ArrayList.add(auto[3]);
+                    D_ArrayList.add(auto[4]);
+                }
+                messageAdapter.notifyDataSetChanged();
+
+
+                Bundle args = new Bundle();
+                /*String message = messageAdapter.getItem(position);*/
+                args.putString("AutoID",ID_ArrayList.get(position));
+                args.putString("Fuel", F_ArrayList.get(position));
+                args.putString("Price", P_ArrayList.get(position));
+                args.putString("Kilo", K_ArrayList.get(position));
+                args.putString("Date", D_ArrayList.get(position));
+
+                Autoshowinfo newFragment = new Autoshowinfo();
+                newFragment.setArguments(args);
+
+                FragmentTransaction tra = getFragmentManager().beginTransaction();
+                tra.replace(R.id.autoframe, newFragment);
+                tra.addToBackStack(null);
+
+                tra.commit();
+                /*Intent intent = new Intent(AutomobileListview.this, Autoshowinfo.class);
+                intent.putExtras(args);
+                startActivity(intent);
+                Log.i(ACTIVITY_NAME, "User clicked view.");*/
             }
         });
 
