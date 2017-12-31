@@ -109,39 +109,40 @@ public class ActivityTracking extends AppCompatActivity {
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
+                                String type = activitySpinner.getSelectedItem().toString();
+                                int time=0;
+                                String comments = commentsText.getText().toString();
+
+                                if (!timeText.getText().toString().isEmpty()) {
+                                    time=Integer.parseInt(timeText.getText().toString());
+                                }
+
+                                if (comments.isEmpty()) {
+                                    comments = "No comment";
+                                }
+                                //Activites act = new Activites(type, time, comments);
+                                //messages.add(act);
+
+                                ContentValues initialValues = new ContentValues();
+                                adapter.notifyDataSetChanged();
+                                //adapter.notifyDataSetChanged();
+                                initialValues.put(dbHelper.KEY_TYPE,activitySpinner.getSelectedItem().toString());
+                                initialValues.put(dbHelper.KEY_TIME,timeText.getText().toString());
+                                initialValues.put(dbHelper.KEY_COMMENTS,commentsText.getText().toString());
+                                db.insert(TABLE_NAME,null,initialValues);
+                                timeText.setText("");
+                                commentsText.setText("");
+
+                                finish();
+                                Intent intent = getIntent();
+                                startActivity(intent);
+                                Toast.makeText(getApplicationContext(), "Your activity is saved", Toast.LENGTH_SHORT).show();
+                                alertDialog.dismiss();
                             }
                         });
                 alertDialog.show();
 
-                String type = activitySpinner.getSelectedItem().toString();
-                int time=0;
-                String comments = commentsText.getText().toString();
 
-                if (!timeText.getText().toString().isEmpty()) {
-                    time=Integer.parseInt(timeText.getText().toString());
-                }
-
-                if (comments.isEmpty()) {
-                    comments = "No comment";
-                }
-                //Activites act = new Activites(type, time, comments);
-                //messages.add(act);
-
-                ContentValues initialValues = new ContentValues();
-                adapter.notifyDataSetChanged();
-                //adapter.notifyDataSetChanged();
-                initialValues.put(dbHelper.KEY_TYPE,activitySpinner.getSelectedItem().toString());
-                initialValues.put(dbHelper.KEY_TIME,timeText.getText().toString());
-                initialValues.put(dbHelper.KEY_COMMENTS,commentsText.getText().toString());
-                db.insert(TABLE_NAME,null,initialValues);
-                timeText.setText("");
-                commentsText.setText("");
-
-                alertDialog.dismiss();
-                finish();
-                Intent intent = getIntent();
-                startActivity(intent);
             }
         });
 
