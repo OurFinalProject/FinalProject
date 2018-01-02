@@ -21,12 +21,41 @@
     <string name="fd_fatName">Fat</string>
     <string name="fd_CarboName">Carbohydrate</string>
     <string name="fd_saveText">Save Record</string>
-    <string name="fd_Date">Save Date</string>
-    <string name="title_activity_automoblie_details">AutomoblieDetails</string>
-    <string name="title_activity_automobile_details">AutomobileDetails</string>
-    <string name="title_activity_automain">Automain</string>
+    <string name="fd_Date">Record Date</string>
+    <string name="fd_Time">Record Time</string>
+    <string name="title_activity_food_tracker">FoodTracker</string>
 
-    <!--auto-->
+    <string name="fd_title1">New Food</string>
+    <string name="fd_title2">Food History</string>
+    <string name="fd_title3">Summary</string>
+    <string name="fd_aboutTitle">Food About</string>
+    <string name="fd_dialogTitle">Help Info</string>
+    <string name="fd_cancel">Cancel</string>
+    <string name="fd_update">Update</string>
+    <string name="fd_delete">Delete</string>
+    <string name="title_activity_food_history_info">FoodHistoryInfo</string>
+
+    <string name="fd_lastday">Last Day Information</string>
+    <string name="fd_perday">Average Value Per Day</string>
+    <string name="fd_notftitle">Food notification</string>
+    <string name="fd_notfcontext"> You Can See Average Nutrition Per Day</string>
+    <string name="fd_help">Version 1.0, by Liangliang.\nThere are three main functions in this activity, you can click icons on the top.</string>
+
+    <string name="fd_namewarn">Please input a food name</string>
+    <string name="fd_snack">Add New Food</string>
+    <string name="fd_detail">Detail Information</string>
+
+
+    <!--Activity Tracking!-->
+    <string name="Activities">Activities</string>
+    <string name="Activy_time">Time</string>
+    <string name="Activy_comments">Comments</string>
+    <string name="Activy_save">SAVE</string>
+    <string name="Activy_delete">delete</string>
+    <string name="Activy_edit">edit</string>
+
+  
+   <!--auto-->
     <string name="OK">Ok</string>
     <string name="Cancel">Cancel</string>
     <string name="Summary">Infomation</string>

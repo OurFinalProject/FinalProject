@@ -20,9 +20,6 @@
             android:name=".ActivityTracking"
             android:label="Activity Tracking" />
         <activity
-            android:name=".FoodNutrition"
-            android:label="Food Nutrition Tracker" />
-        <activity
             android:name=".HouseThermostat"
             android:label="House Thermostat" />
         <activity android:name=".HouseThermostatMessageDetails" />
@@ -34,6 +31,19 @@
             android:label="@string/title_activity_automain"
             android:theme="@style/AppTheme" />
         <activity android:name=".AutoSummaryInfo"></activity>
+           
+        <activity android:name=".HouseThermostatMessageDetails" />
+        <activity android:name=".AutomobileListview" />
+        <activity
+            android:name=".FoodTracker"
+            android:label="@string/title_activity_food_tracker"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FoodHistoryInfo"
+            android:label="@string/title_activity_food_history_info"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".FoodSummary"></activity>
+
     </application>
 
 </manifest>
