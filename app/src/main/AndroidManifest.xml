@@ -22,9 +22,16 @@
         <activity
             android:name=".HouseThermostat"
             android:label="House Thermostat" />
+        <activity android:name=".HouseThermostatMessageDetails" />
+        <activity android:name=".FoodHistoryList" />
+        <activity android:name=".AutomobileListview" />
+        <activity android:name=".Autoshowinfo" />
         <activity
-            android:name=".Automobile"
-            android:label="AutoMobile" />
+            android:name=".Automain"
+            android:label="@string/title_activity_automain"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".AutoSummaryInfo"></activity>
+           
         <activity android:name=".HouseThermostatMessageDetails" />
         <activity android:name=".AutomobileListview" />
         <activity
@@ -36,6 +43,7 @@
             android:label="@string/title_activity_food_history_info"
             android:theme="@style/AppTheme" />
         <activity android:name=".FoodSummary"></activity>
+
     </application>
 
 </manifest>

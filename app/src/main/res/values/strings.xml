@@ -54,4 +54,24 @@
     <string name="Activy_delete">delete</string>
     <string name="Activy_edit">edit</string>
 
+  
+   <!--auto-->
+    <string name="OK">Ok</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Summary">Infomation</string>
+    <string name="SumF">Last month Fuel:</string>
+    <string name="SumP">Last month Price AVG:</string>
+    <string name="Sumpermonth">Per month Fuel:</string>
+    <string name="Fuel">Fuel:</string>
+    <string name="Price">Price:</string>
+    <string name="Kilo">Kilometers:</string>
+    <string name="about">About</string>
+    <string name="list">List</string>
+    <string name="editbutton">Eidt</string>
+    <string name="savebutton">Save</string>
+    <string name="price">Price($): </string>
+    <string name="fuelL">Fuel(L)：</string>
+    <string name="KiloKM">Kiolmeter(Km): </string>
+    <string name="showdate">Date: </string>
+
 </resources>
