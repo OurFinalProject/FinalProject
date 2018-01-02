@@ -37,18 +37,20 @@
         />
 
     <Button
+        android:id="@+id/editButton_HT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
         android:text="@string/edit_HouseThermostat"
-        android:id="@+id/editButton_HT"
-        android:layout_gravity="left|bottom" />
+        android:textSize="12sp" />
 
     <Button
+        android:id="@+id/saveButton_HT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
         android:text="@string/save_HouseThermostat"
-        android:id="@+id/saveButton_HT"
-        android:layout_gravity="center|bottom" />
+        android:textSize="12sp" />
 
     <Button
         android:layout_width="wrap_content"
