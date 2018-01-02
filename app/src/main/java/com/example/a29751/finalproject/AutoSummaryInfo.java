@@ -24,7 +24,7 @@ public class AutoSummaryInfo extends AppCompatActivity {
     private AutoDatabaseHelper dbH;
     private SQLiteDatabase db;
     private LinearLayout linearLayout;
-    private String pAVG,perF;
+    private String pAVG,perF,pLast;
     private double lastF;
 
     @Override
@@ -85,6 +85,7 @@ public class AutoSummaryInfo extends AppCompatActivity {
 
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
             pAVG = decimalFormat.format(lastsumP/num);
+            pLast = decimalFormat.format(lastF/num);
             perF = decimalFormat.format(sumF/12);
 
             publishProgress(25);
@@ -107,8 +108,9 @@ public class AutoSummaryInfo extends AppCompatActivity {
         @Override
         protected void onPostExecute(String string) {
 
+
             priceAVG.setText(pAVG);
-            lastmonthF.setText(String.valueOf(lastF));
+            lastmonthF.setText(pLast);
             permonth.setText(perF);
 
             progressBar.setVisibility(View.INVISIBLE);
