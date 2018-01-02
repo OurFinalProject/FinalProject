@@ -56,6 +56,9 @@
 
   
    <!--auto-->
+    <string name="title_activity_automoblie_details">AutomoblieDetails</string>
+    <string name="title_activity_automobile_details">AutomobileDetails</string>
+    <string name="title_activity_automain">Automain</string>
     <string name="OK">Ok</string>
     <string name="Cancel">Cancel</string>
     <string name="Summary">Infomation</string>
