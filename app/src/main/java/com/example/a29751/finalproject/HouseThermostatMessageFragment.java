@@ -1,17 +1,16 @@
 package com.example.a29751.finalproject;
 
-
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +20,8 @@ public class HouseThermostatMessageFragment extends Fragment {
     EditText myText1,myText2, myText3, myText4;
     Button btDelete, btSave, btUpdate;
     String messageId, weekS, timeS, tempS;
+    String editTextTemp;
+ //   Boolean delConf = false;
 
     public HouseThermostatMessageFragment() {
         // Required empty public constructor
@@ -64,24 +65,57 @@ public class HouseThermostatMessageFragment extends Fragment {
         btDelete   = (Button)myView.findViewById(R.id.deleteButton_HT);
         btDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(houseThermostat==null) {//on phone
-                    // Code here executes on main thread after user presses button
-                    Intent intent = new Intent(getActivity(), HouseThermostat.class);
-                    //Intent intent = new Intent();
-                    //getActivity().setResult(Activity.RESULT_OK, data);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.HTdeleteTitle);
+
+                builder.setPositiveButton(R.string.HTok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+            //            delConf = true;
+                        if (houseThermostat == null) {//on phone
+                            // Code here executes on main thread after user presses button
+                            Intent intent = new Intent(getActivity(), HouseThermostat.class);
+                            intent.putExtra("btnType", 1);
+
+                            getActivity().setResult(Integer.parseInt(messageId), intent);//void setResult (int resultCode, Intent data)
+                            //  Call this to set the result that your activity will return to its caller.
+                            getActivity().finish();
+                            //startActivityForResult(intent, Integer.parseInt(messageId));
+                        } else//on tablet
+                        {
+                            houseThermostat.deleteTabletMsg(Integer.parseInt(messageId));
+                        }
+                    }
+                });
+                builder.setNegativeButton(R.string.HTcancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+// Create the AlertDialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+      //          if (delConf == true) {
+           /*         if (houseThermostat == null) {//on phone
+                        // Code here executes on main thread after user presses button
+                        Intent intent = new Intent(getActivity(), HouseThermostat.class);
+                        intent.putExtra("btnType", 1);
+
+                        getActivity().setResult(Integer.parseInt(messageId), intent);//void setResult (int resultCode, Intent data)
+                        //  Call this to set the result that your activity will return to its caller.
+                        getActivity().finish();
+                        //startActivityForResult(intent, Integer.parseInt(messageId));
+                    } else//on tablet
+                    {
+                        houseThermostat.deleteTabletMsg(Integer.parseInt(messageId));
+                    }
+*/
+     //           }
 
 
-                    intent.putExtra("btnType",1);
 
-                    getActivity().setResult(Integer.parseInt(messageId), intent);//void setResult (int resultCode, Intent data)
-                    //  Call this to set the result that your activity will return to its caller.
-                    getActivity().finish();
-                    //startActivityForResult(intent, Integer.parseInt(messageId));
-                }
-                else//on tablet
-                {
-                    houseThermostat.deleteTabletMsg(Integer.parseInt(messageId));
-                }
             }
         });
 
@@ -91,6 +125,33 @@ public class HouseThermostatMessageFragment extends Fragment {
                 weekS = myText2.getText().toString();
                 timeS = myText3.getText().toString();
                 tempS = myText4.getText().toString();
+
+//parent.showCustomDialog();
+    /*            LayoutInflater li= getActivity().getLayoutInflater();
+                LayoutInflater li = LayoutInflater.from(getActivity());
+               View.inflate();
+                LinearLayout rootTag = (LinearLayout)li.inflate(R.layout.htcustomlayout, null);
+                final EditText et = (EditText)rootTag.findViewById(R.id.messagename);
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                builder2.setTitle(R.string.HTcustomDialogTitle);
+
+                builder2.setPositiveButton(R.string.HTok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.d("Toolbar", "jump");
+                        editTextTemp = et.getText().toString();
+                        Log.d("Toolbar", editTextTemp);
+                    }
+                });
+                builder2.setView(rootTag);
+                builder2.setNegativeButton(R.string.HTcancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {   }          });
+                AlertDialog dialog2 = builder2.create();
+                dialog2.show();
+                tempS = editTextTemp;*/
+
+
+
+
                 if(houseThermostat==null) {//on phone
                     // Code here executes on main thread after user presses button
                     Intent intent = new Intent(getActivity(), HouseThermostat.class);
@@ -111,6 +172,10 @@ public class HouseThermostatMessageFragment extends Fragment {
 
                     houseThermostat.saveNewTabletMsg(Integer.parseInt(messageId), weekS, timeS, tempS);
                 }
+
+                Toast t1 = Toast.makeText(getActivity(), R.string.HTSaveAsNew, Toast.LENGTH_LONG);
+                t1.show();
+
             }
         });
 
@@ -140,6 +205,8 @@ public class HouseThermostatMessageFragment extends Fragment {
 
                     houseThermostat.updateTabletMsg(Integer.parseInt(messageId), weekS, timeS, tempS);
                 }
+                Toast t2 = Toast.makeText(getActivity(), R.string.HTEditAndSave, Toast.LENGTH_LONG);
+                t2.show();
             }
         });
 

@@ -4,47 +4,52 @@ package com.example.a29751.finalproject;
  * Finished by Cheng Yan
  * This is about House Thermostat
  */
+
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Xml;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.Calendar;
 
-public class HouseThermostat extends AppCompatActivity {
+public class HouseThermostat extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,AdapterView.OnItemSelectedListener {
 
     private ListView listView;
-    private EditText eTextWeek, eTextTime, eTextTemp;
-    private Button buttonAdd;
+    private EditText eTextWeek, eTextTemp;
+    private TextView eTextTime;
+    private Button buttonAdd,buttonSetTime;
     HouseThermostatDatabaseHelper houseThermostatDatabaseHelper;
     HouseThermostatAdapter messageAdapterHT;
     Cursor cursor;
@@ -55,34 +60,64 @@ public class HouseThermostat extends AppCompatActivity {
     HouseThermostatMessageFragment houseThermostatMessageFragment;
     Boolean fb1;
     private ProgressBar pBar;
+    String responseText = "1.0";
+    String addText = null;
+    String dayOfWeek;
+
+//    String dayOfWeek = "Monday";
+    DrawerLayout drawer;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private Spinner spinner1, spinner2;
+
+    public void addListenerOnSpinnerItemSelection() {
+        spinner1 = (Spinner) findViewById(R.id.spinner1);
+        spinner1.setOnItemSelectedListener(this);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
+        dayOfWeek = parent.getItemAtPosition(pos).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house_thermostat);
+        addListenerOnSpinnerItemSelection();
+     //   responseText = "1.0";
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        setSupportActionBar(toolbar);
+
+        drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_string, R.string.close_string);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
+        navView.setNavigationItemSelectedListener(this);
+
         Log.i(ACTIVITY_NAME, "In onCreate()");
         listView = (ListView)findViewById(R.id.listView_HouseThermostat);
         eTextWeek   = (EditText) findViewById(R.id.edittext_Week_HouseThermostat);
-        eTextTime   = (EditText) findViewById(R.id.edittext_Time_HouseThermostat);
+        //eTextTime   = (EditText) findViewById(R.id.edittext_Time_HouseThermostat);
+        eTextTime   = (TextView) findViewById(R.id.edittext_Time_HouseThermostat);
+
         eTextTemp   = (EditText) findViewById(R.id.edittext_Temp_HouseThermostat);
         //listView.setAdapter();
         messageAdapterHT =new HouseThermostatAdapter(this);
         listView.setAdapter(messageAdapterHT);
-        Log.d("wen","messageId");
-
         fb1 = findViewById(R.id.frameLayout_houseThermostat) != null;//layout-sw600dp/activity_chat_window.xml
 
         pBar = (ProgressBar)findViewById(R.id.progress_bar);
         pBar.setVisibility(View.VISIBLE);
         pBar.setProgress(0);
 
-
         houseThermostatDatabaseHelper = new HouseThermostatDatabaseHelper(this);
-        //      chatDbHelper = new ChatDatabaseHelper(this);
         db = houseThermostatDatabaseHelper.getWritableDatabase();
-
-        //new HTQuery().execute();
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -90,9 +125,7 @@ public class HouseThermostat extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapter, View view,
                                     int position, long id) {
                 String messa=(String)adapter.getItemAtPosition(position);
-                //      Log.d("**********", string);
-                //      db = chatDbHelper.getWritableDatabase();
-                displayProgressBar();
+              //  displayProgressBar();
                 String weekS = messageAdapterHT.getItemArr(position)[0];
                 String timeS = messageAdapterHT.getItemArr(position)[1];
                 String tempS = messageAdapterHT.getItemArr(position)[2] +messageAdapterHT.getItemArr(position)[3];
@@ -100,18 +133,11 @@ public class HouseThermostat extends AppCompatActivity {
                 long mId  = messageAdapterHT.getItemId(position);
                 String messageId =String.valueOf( mId);
                 Log.d("wen",messageId);
-                /*
-                Display display = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                if (size.x > size.y) */
+
                 //Tablet
                 if(fb1||getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 {
-                    //You can use Bundle or Class to pass message to Fragment
                     Bundle bundle = new Bundle();
-                    //String myMessage = "Stackoverflow is cool!";
-
                     bundle.putString("message", messa );
                     bundle.putLong("mId",mId);
                     bundle.putString("mweek",weekS);
@@ -119,19 +145,10 @@ public class HouseThermostat extends AppCompatActivity {
                     bundle.putString("mtemp",tempS);
                     bundle.putString("messageId", messageId );
                     houseThermostatMessageFragment = HouseThermostatMessageFragment.newInstance(HouseThermostat.this);//chatWindow not null, on tablet
-                    //messageFragment.myText1.setText(string);
-                    //messageFragment.myText2.setText(messageId);
                     houseThermostatMessageFragment.setArguments(bundle);//Supply the construction arguments for this fragment.
 
                     getFragmentManager().beginTransaction().replace(R.id.frameLayout_houseThermostat, houseThermostatMessageFragment).commit();//in layout-sw600dp//activity_chat_windows.xml
-                    //FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    //abstract FragmentTransaction	add(int containerViewId, Fragment fragment)   Calls add(int, Fragment, String) with a null tag.
-                    //Add a fragment to the activity state.
-                } else {//on phone
-                    //Please Bundle the Result Here
-
-                    //i.putExtra("myParam", 1);
-
+                } else {
                     Intent intent = new Intent(HouseThermostat.this, HouseThermostatMessageDetails.class);
                     intent.putExtra("message", messa);
                     intent.putExtra("messageId", messageId);
@@ -144,9 +161,6 @@ public class HouseThermostat extends AppCompatActivity {
             }
         });
 
-
-
-        //   Cursor cursor = db.query("HouseThermostatInfo", null, null, null, null, null, null);
         cursor = db.rawQuery("select * from HouseThermostatInfo", null);
 
         if(cursor.moveToFirst()) {
@@ -165,31 +179,71 @@ public class HouseThermostat extends AppCompatActivity {
             }
         }
 
-
-
         Log.i(ACTIVITY_NAME, "Cursor's  column count =" + cursor.getColumnCount() );
 
         for(int i = 0; i < cursor.getColumnCount(); i++){
             System.out.println(cursor.getColumnName(i));
         }
 
+        buttonSetTime = (Button)findViewById(R.id.timeButton_HouseThermostat);
+        buttonSetTime.setOnClickListener(new View.OnClickListener() {
+                                             public void onClick(View v) {
+                                                 final Calendar c = Calendar.getInstance();
+                                                 mHour = c.get(Calendar.HOUR_OF_DAY);
+                                                 mMinute = c.get(Calendar.MINUTE);
+                                                 // Launch Time Picker Dialog
+                                                 TimePickerDialog timePickerDialog =  new TimePickerDialog(HouseThermostat.this,
+                                                         new TimePickerDialog.OnTimeSetListener(){
+                                                             @Override
+                                                             public void onTimeSet(TimePicker view, int hourOfDay,
+                                                                                   int minute) {
+                                                                 eTextTime.setText(hourOfDay + ":" + minute);
+                                                             }
+                                                         }, mHour, mMinute, true);
+                                                 timePickerDialog.show();
+
+                                            }
+
+
+
+
+                                         });
+
 
         buttonAdd = (Button)findViewById(R.id.addButton_HouseThermostat);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String newStringWeek = eTextWeek.getText().toString();
+                addText = "";
+
+                //String newStringWeek = eTextWeek.getText().toString();
                 String newStringTime = eTextTime.getText().toString();
                 String newStringTemp = eTextTemp.getText().toString();
-                String [] newStringArr = new String []{newStringWeek, newStringTime, " Temp -> ", newStringTemp};
+
+                String newStringWeek = dayOfWeek;
+                //String newStringTime = eTextTime.getText().toString();
+                //String newStringTemp = "22";
+                if (newStringWeek.equals(""))
+      //              addText += "Week can not be null! ";
+                    addText += getString(R.string.HTWeekNull);
+                    if (newStringTime.equals("Time"))
+                    addText += getString(R.string.HTTimeNull);
+                if (newStringTemp.equals(""))
+                    addText += getString(R.string.HTTempNull);
+                if (addText.equals(""))
+                {
+//                    addText = "Added successful!";
+                    //addText = "";
+                    addText = getString(R.string.HTAddSucc);
+                String[] newStringArr = new String[]{newStringWeek, newStringTime, " Temp -> ", newStringTemp};
                 chatMessageArr.add(newStringArr);
-                chatMessage.add(newStringWeek + newStringTime+" Temp -> "+newStringTemp);
+                chatMessage.add(newStringWeek + newStringTime + " Temp -> " + newStringTemp);
                 //       chatMessage.asList("everton", "liverpool", "swansea", "chelsea");
                 messageAdapterHT.notifyDataSetChanged();
-                eTextWeek.setText("");
-                eTextTime.setText("");
+                dayOfWeek = "Monday";
+                //eTextTime.setText("");
                 eTextTemp.setText("");
 
-               ContentValues cValues = new ContentValues();
+                ContentValues cValues = new ContentValues();
                 cValues.put("week", newStringWeek);
                 cValues.put("time", newStringTime);
                 //cValues.put("temp", "Temp-->" + newStringTemp);
@@ -199,14 +253,14 @@ public class HouseThermostat extends AppCompatActivity {
                 cursor = db.rawQuery("select * from HouseThermostatInfo", null);
                 chatMessage.clear();
                 chatMessageArr.clear();
-                if(cursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
                     while (!cursor.isAfterLast()) {
                         String s = cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE))
-                                +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE))
-                                +" Temp -> "
-                                +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE));
+                                + cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE))
+                                + " Temp -> "
+                                + cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE));
                         Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + s);
-                        String [] newStringArr1 = new String []{cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE)),
+                        String[] newStringArr1 = new String[]{cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE)),
                                 cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE)), " Temp -> ",
                                 cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE))};
                         chatMessage.add(s);
@@ -215,25 +269,17 @@ public class HouseThermostat extends AppCompatActivity {
                         cursor.moveToNext();
                     }
                 }
-
                 messageAdapterHT.notifyDataSetChanged();
-
+            }
+            View v3;
+   if (fb1)  v3 = (View) findViewById(R.id.land_test_house_thermostat);
+   else  v3 = (View) findViewById(R.id.test_house_thermostat);
+                Snackbar.make(v3, addText, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 
-   /*     listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-     //           int selected_row = position;
-   //             String[] selectedItem = (String[]) parent.getItemAtPosition(selected_row);
-                eTextWeek.setText(messageAdapterHT.getItem(position));
-                eTextWeek.setText(messageAdapterHT.getItemArr(position)[0]);
-                eTextTime.setText(messageAdapterHT.getItemArr(position)[1]);
-                eTextTemp.setText(messageAdapterHT.getItemArr(position)[3]);
-           }
-        });*/
     }
-
 
     private class HouseThermostatAdapter extends ArrayAdapter<String> {
         public HouseThermostatAdapter(Context ctx){
@@ -277,7 +323,15 @@ public class HouseThermostat extends AppCompatActivity {
     public void deleteMsg(int id) {
         db = houseThermostatDatabaseHelper.getWritableDatabase();
         db.delete("HouseThermostatInfo", "id=?", new String[]{String.valueOf(id)});
+    }
 
+    public void deleteTabletMsg(int id) {
+        deleteMsg(id);
+        updateListView();
+        getFragmentManager().beginTransaction().remove(houseThermostatMessageFragment).commit();
+    }
+
+    public void updateListView(){
         /*
         cursor = db.rawQuery("select * from HouseThermostatInfo", null);
         chatMessage.clear();
@@ -288,55 +342,22 @@ public class HouseThermostat extends AppCompatActivity {
                         +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE))
                         +" Temp -> "
                         +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE));
-
+                Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + s);
+                chatMessage.add(s);
                 String [] newStringArr1 = new String []{cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE)),
                         cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE)), " Temp -> ",
                         cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE))};
-
-
-                Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + s);
-                chatMessage.add(s);
                 chatMessageArr.add(newStringArr1);
                 //           chatMessage.add(cursor.getString(1));
                 cursor.moveToNext();
             }
         }
         */
-        //    db.close();
-    }
-
-    public void deleteTabletMsg(int id) {
-        deleteMsg(id);
-        messageAdapterHT.notifyDataSetChanged();
-
-        //           listView.invalidate();//Invalidate the whole view. If the view is visible, onDraw(android.graphics.Canvas) will be called at some point in the future.
-//            listView.refreshDrawableState();//all this to force a view to update its drawable state. This will cause drawableStateChanged to be called on this view. Views that are interested in the new state should call getDrawableState.
-        getFragmentManager().beginTransaction().remove(houseThermostatMessageFragment).commit();
-    }
-
-    public void updateListView(){
-        cursor = db.rawQuery("select * from HouseThermostatInfo", null);
-        chatMessage.clear();
-        chatMessageArr.clear();
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                String s = cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE))
-                        +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE))
-                        +" Temp -> "
-                        +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE));
-                Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + s);
-                chatMessage.add(s);
-                String [] newStringArr1 = new String []{cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE)),
-                        cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE)), " Temp -> ",
-                        cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE))};
-                chatMessageArr.add(newStringArr1);
-                //           chatMessage.add(cursor.getString(1));
-                cursor.moveToNext();
-            }
-        }
-        messageAdapterHT.notifyDataSetChanged();
+        Updatebase updatebase = new Updatebase();
+        updatebase.execute();
+        /*messageAdapterHT.notifyDataSetChanged();
         listView.invalidate();//Invalidate the whole view. If the view is visible, onDraw(android.graphics.Canvas) will be called at some point in the future.
-        listView.refreshDrawableState();
+        listView.refreshDrawableState();*/
     }
 
     public void saveNewMsg(int id, String weekS, String timeS, String tempS) {
@@ -349,32 +370,6 @@ public class HouseThermostat extends AppCompatActivity {
         tempS  = parts[1];
         cValues1.put("temp", tempS);
         db.insert("HouseThermostatInfo", null, cValues1);
-
-
-   //     db.insert("HouseThermostatInfo", "id=?", new String[]{String.valueOf(id), weekS, timeS, tempS});
-        /*
-        cursor = db.rawQuery("select * from HouseThermostatInfo", null);
-        chatMessage.clear();
-        chatMessageArr.clear();
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                String s = cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE))
-                        +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE))
-                        +" Temp -> "
-                        +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE));
-                Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + s);
-                chatMessage.add(s);
-                String [] newStringArr1 = new String []{cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE)),
-                        cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE)), " Temp -> ",
-                        cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE))};
-                chatMessageArr.add(newStringArr1);
-                //           chatMessage.add(cursor.getString(1));
-                cursor.moveToNext();
-            }
-        }
-
-        */
-        //    db.close();
     }
 
     public void displayProgressBar(){
@@ -388,7 +383,7 @@ public class HouseThermostat extends AppCompatActivity {
                     int progress =1;
                     while(progress<=30) {
                         pBar.setProgress(progress);
-                        sleep(1000);
+                        sleep(300);
                         ++progress;
                     }
                 }
@@ -399,16 +394,11 @@ public class HouseThermostat extends AppCompatActivity {
 
         pBarThread.start();
 
-
     }
 
     public void saveNewTabletMsg(int id, String weekS, String timeS, String tempS) {
         saveNewMsg(id, weekS, timeS, tempS);
- //       messageAdapterHT.notifyDataSetChanged();
-
-        //           listView.invalidate();//Invalidate the whole view. If the view is visible, onDraw(android.graphics.Canvas) will be called at some point in the future.
-//            listView.refreshDrawableState();//all this to force a view to update its drawable state. This will cause drawableStateChanged to be called on this view. Views that are interested in the new state should call getDrawableState.
-  //      getFragmentManager().beginTransaction().add(houseThermostatMessageFragment, null).commit();
+        updateListView();
     }
 
 
@@ -422,102 +412,71 @@ public class HouseThermostat extends AppCompatActivity {
         tempS  = parts[1];
         cValues1.put("temp", tempS);
         db.update("HouseThermostatInfo", cValues1, "id=?", new String[]{String.valueOf(id)});
-
-//int update (String table, ContentValues values, String whereClause, String[] whereArgs)
-        //     db.insert("HouseThermostatInfo", "id=?", new String[]{String.valueOf(id), weekS, timeS, tempS});
-
-        /*
-        cursor = db.rawQuery("select * from HouseThermostatInfo", null);
-        chatMessage.clear();
-        chatMessageArr.clear();
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                String s = cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE))
-                        +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE))
-                        +" Temp -> "
-                        +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE));
-                Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + s);
-                chatMessage.add(s);
-                String [] newStringArr1 = new String []{cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE)),
-                        cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE)), " Temp -> ",
-                        cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE))};
-
-
-
-
-                chatMessageArr.add(newStringArr1);
-
-                //           chatMessage.add(cursor.getString(1));
-                cursor.moveToNext();
-            }
-        }
-        //    db.close();
-        */
     }
 
     public void updateTabletMsg(int id, String weekS, String timeS, String tempS) {
         updateMsg(id, weekS, timeS, tempS);
-//        messageAdapterHT.notifyDataSetChanged();
+        updateListView();
+    }
 
-        //           listView.invalidate();//Invalidate the whole view. If the view is visible, onDraw(android.graphics.Canvas) will be called at some point in the future.
-//            listView.refreshDrawableState();//all this to force a view to update its drawable state. This will cause drawableStateChanged to be called on this view. Views that are interested in the new state should call getDrawableState.
-        //      getFragmentManager().beginTransaction().add(houseThermostatMessageFragment, null).commit();
+    private void HTQuery1(int btnType,int resultCode,String weekS, String timeS, String tempS){
+        switch (btnType){
+            case 1 :   deleteMsg(resultCode);
+                        break;
+            case 2 :     saveNewMsg(resultCode,weekS,timeS,tempS);
+                        break;
+            case 3 :   updateMsg(resultCode, weekS,timeS,tempS);
+                       break;
+            default:   break;
+        }
+
+
     }
 
 
-    private class HTQuery extends AsyncTask<String, Integer, String> {
+
+    private class Updatebase extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... urls) {
             int i = urls.length;
-            String result = null;
+            String result = "uuu";
 
-            String test = urls[0];
-            switch (urls[0]){
-                case "1" :   deleteMsg(Integer.valueOf(urls[1]));
-                    result = test;
-                             //messageAdapterHT.notifyDataSetChanged();
-                             break;
-                case "2":    //new HTQuery().execute(btnType, weekS, timeS, tempS);
-                             saveNewTabletMsg(Integer.valueOf(urls[1]), urls[2],urls[3],urls[4]);
-                    result = test;
-                             //messageAdapterHT.notifyDataSetChanged();
-                             break;
-                case "3" :   updateTabletMsg(Integer.valueOf(urls[1]),  urls[2],urls[3],urls[4]);
-                    result = test;
-                             //messageAdapterHT.notifyDataSetChanged();
-                             break;
-                default:   break;
-            }
-
-            /*
-             for(int ii=1;ii<5;ii++) {
-                 try {
-                     Thread.sleep(1000);
-                 }//SystemClock.sleep(1000);
-                 catch (InterruptedException e) {
-                     e.printStackTrace();
-                 }
-                 publishProgress(ii * 25);
-
-             }
-             */
-   /*         cursor = db.rawQuery("select * from HouseThermostatInfo", null);
-            int rowCount = cursor.getCount();
-            int i =1;
+            cursor = db.rawQuery("select * from HouseThermostatInfo", null);
+            chatMessage.clear();
+            chatMessageArr.clear();
+            int len = cursor.getCount();
+            int im = 0;
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    try{Thread.sleep(1000);}//SystemClock.sleep(1000);
-                    catch (InterruptedException e){e.printStackTrace();}
-                    publishProgress(i/rowCount*100);
-                    i++;
-
+                    String s = cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE))
+                            +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE))
+                            +" Temp -> "
+                            +cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE));
+                    Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + s);
+                    chatMessage.add(s);
+                    String [] newStringArr1 = new String []{cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.WEEK_MESSAGE)),
+                            cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TIME_MESSAGE)), " Temp -> ",
+                            cursor.getString(cursor.getColumnIndex(houseThermostatDatabaseHelper.TEMP_MESSAGE))};
+                    chatMessageArr.add(newStringArr1);
+                    //           chatMessage.add(cursor.getString(1));
+                    im++;
+                    try {
+                        Thread.sleep(Math.round(3000/len));
+                        if (im>=len)
+                            publishProgress(100);
+                        else {
+                            float ac = (float) im / len;
+                            publishProgress(Math.round(ac * 100));
+                        }
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                     cursor.moveToNext();
 
-                    case 2:  db.update("HouseThermostatInfo", cValues1, "id=?", new String[]{String.valueOf(id)});
                 }
-            }*/
-            //    db.close();
+
+            }
 
 
         return result;
@@ -526,28 +485,24 @@ public class HouseThermostat extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... value) {
             pBar.setVisibility(View.VISIBLE);
-            //pBar.setProgress(value[0]);
+            pBar.setProgress(value[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
-            //pBar.setVisibility(View.INVISIBLE);
+            pBar.setVisibility(View.INVISIBLE);
+            messageAdapterHT.notifyDataSetChanged();
+            listView.invalidate();//Invalidate the whole view. If the view is visible, onDraw(android.graphics.Canvas) will be called at some point in the future.
+            listView.refreshDrawableState();
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-           // pBar.setVisibility(View.VISIBLE);
+            pBar.setVisibility(View.VISIBLE);
         }
     }
-
-
-
-
-
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 10&& data != null && data.getExtras() != null) {   //Come back from Cell Phone delete
@@ -559,11 +514,13 @@ public class HouseThermostat extends AppCompatActivity {
             String tempS = data.getStringExtra("tempS");
 
             String [] tmp = new String[5];
-            HTQuery htQuery = new HTQuery();
+            HTQuery1(btnType,resultCode,weekS, timeS, tempS);
 
-    //        htQuery.execute(String.valueOf(btnType),String.valueOf(resultCode),weekS, timeS, tempS);
-            //if(htQuery.getStatus()==AsyncTask.Status.FINISHED)
-             //   updateListView();
+            updateListView();
+
+            //HTQuery htQuery = new HTQuery();
+
+            /*
             try {
                 String aa =htQuery.execute(String.valueOf(btnType),String.valueOf(resultCode),weekS, timeS, tempS).get();
                 while(aa==null){}
@@ -573,32 +530,129 @@ public class HouseThermostat extends AppCompatActivity {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            //updateListView();
-/*            switch (btnType){
-                case 1 :   deleteMsg(a);
-                           messageAdapterHT.notifyDataSetChanged();
-                           break;
-                case 2 :   new HTQuery().execute(2);
-                           saveNewTabletMsg(resultCode, weekS, timeS, tempS);
+            */
 
-                           break;
-                case 3 : new HTQuery().execute(3);
-                           updateTabletMsg(resultCode, weekS, timeS, tempS);
-
-                           break;
-                default:   break;
-            }*/
-
-
-
-//                listView.invalidate();
-        }
+         }
     }
 
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        Log.d("Toolbar", "Optivvvvvvon 2 selected");
+        //super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Log.d("Toolbar", "Optivvvvvvon3 selected");
+        switch (id) {
+            case R.id.HTaction_one:
+                Log.d("Toolbar", "Option 1 selected");
+                Log.d("Toolbar", responseText);
+
+                View v2 = (View)findViewById(R.id.test_house_thermostat);
+                Snackbar.make(v2, responseText, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                break;
+
+            case R.id.HTaction_two:
+                Log.d("Toolbar", "Option 2 selected");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.HTdialogTitle);
+
+                builder.setPositiveButton(R.string.HTok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                });
+                builder.setNegativeButton(R.string.HTcancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+// Create the AlertDialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+
+                break;
+
+            case R.id.HTaction_three:
+                Log.d("Toolbar", "Option 3 selected");
+                LayoutInflater li= getLayoutInflater();
+                LinearLayout rootTag = (LinearLayout)li.inflate(R.layout.htcustomlayout, null);
+                final EditText et = (EditText)rootTag.findViewById(R.id.messagename);
+                //            final String sss = et.getText().toString();
+
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setTitle(R.string.HTcustomDialogTitle);
+                LayoutInflater inflater = getLayoutInflater();
+
+                builder2.setPositiveButton(R.string.HTok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //String sss = et.getText().toString();
+                        Log.d("Toolbar", "jump");
+
+                        responseText = et.getText().toString();
+                        Log.d("Toolbar", responseText);
+
+                    }
+                });
+
+                builder2.setView(rootTag);
+
+                builder2.setNegativeButton(R.string.HTcancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+// Create the AlertDialog
+                AlertDialog dialog2 = builder2.create();
+                dialog2.show();
+
+                break;
+            case R.id.HTHelp:
+                Toast t = Toast.makeText(this, R.string.HThelpItem, Toast.LENGTH_LONG);
+                t.show();
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.nav_item_one:
+                String s2 = getString(R.string.HTinstructionItem1) + responseText + getString(R.string.HTinstructionItem2);
+                Toast t1 = Toast.makeText(this, s2, Toast.LENGTH_LONG);
+//                Toast t1 = Toast.makeText(this, R.string.HTinstructionItem1 + responseText +R.string.HTinstructionItem1, Toast.LENGTH_LONG);
+                t1.show();
+                break;
+            case R.id.nav_item_two:
+                break;
+            case R.id.nav_item_three:
+                break;
+            case R.id.nav_item_four:
+                break;
+        }
+        drawer.closeDrawers();
+        return true;
     }
 
 }
